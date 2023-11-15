@@ -3,38 +3,38 @@
 package main
 
 import (
-  "github.com/coderlewin/ucenter/internal/infrastructure/persistence/mysql"
-  "github.com/coderlewin/ucenter/internal/repository"
-  "github.com/coderlewin/ucenter/internal/service"
-  "github.com/coderlewin/ucenter/internal/web"
-  "github.com/coderlewin/ucenter/ioc"
-  "github.com/google/wire"
+	"github.com/coderlewin/ucenter/internal/infrastructure/persistence/mysql"
+	"github.com/coderlewin/ucenter/internal/repository"
+	"github.com/coderlewin/ucenter/internal/service"
+	"github.com/coderlewin/ucenter/internal/web"
+	"github.com/coderlewin/ucenter/ioc"
+	"github.com/google/wire"
 )
 
 func InitApp() *App {
-  wire.Build(
-    ioc.InitDB,
+	wire.Build(
+		ioc.InitDB,
 
-    // DAO 部分
-    mysql.NewUserDao,
-    // Cache 部分
+		// DAO 部分
+		mysql.NewUserDao,
+		// Cache 部分
 
-    // repository 部分
-    repository.NewUserRepository,
+		// repository 部分
+		repository.NewUserRepository,
 
-    // service 部分
-    service.NewUserService,
+		// service 部分
+		service.NewUserService,
 
-    // handler 部分
-    web.NewUserHandler,
+		// handler 部分
+		web.NewUserHandler,
 
-    // hertz 的中间件
-    ioc.CommonMiddlewares,
+		// hertz 的中间件
+		ioc.CommonMiddlewares,
 
-    // Web 服务器
-    ioc.InitWebServer,
+		// Web 服务器
+		ioc.InitWebServer,
 
-    wire.Struct(new(App), "*"),
-  )
-  return new(App)
+		wire.Struct(new(App), "*"),
+	)
+	return new(App)
 }
