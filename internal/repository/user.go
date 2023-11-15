@@ -8,6 +8,7 @@ import (
 	"github.com/duke-git/lancet/v2/slice"
 )
 
+//go:generate mockgen -source=./user.go -package=repomocks -destination=mocks/user.mock.go UserRepository
 type UserRepository interface {
 	Create(ctx context.Context, user domain.User) (int64, error)
 	Delete(ctx context.Context, id int64) error
