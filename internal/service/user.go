@@ -11,6 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
+//go:generate mockgen -source=./user.go -package=svcmocks -destination=./mocks/user.mock.go UserService
 type UserService interface {
 	Register(ctx context.Context, ud domain.User) (int64, error)
 	Login(ctx context.Context, ud domain.User) (domain.User, error)

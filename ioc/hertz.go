@@ -1,13 +1,16 @@
 package ioc
 
 import (
+	"context"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/app/server"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/coderlewin/ucenter/internal/web"
 	"github.com/coderlewin/ucenter/internal/web/middleware"
 	"github.com/coderlewin/ucenter/pkg/cfg"
 	"github.com/hertz-contrib/sessions"
 	"github.com/hertz-contrib/sessions/cookie"
+	"time"
 )
 
 func InitWebServer(mws []app.HandlerFunc, userHdl *web.UserHandler) *server.Hertz {
@@ -26,6 +29,7 @@ func InitWebServer(mws []app.HandlerFunc, userHdl *web.UserHandler) *server.Hert
 func CommonMiddlewares() []app.HandlerFunc {
 	return []app.HandlerFunc{
 		sessionHandlerFunc(),
+		accessLog(),
 		middleware.NewCheckSessionAuthMiddlewareBuilder().Build(),
 	}
 }
@@ -38,4 +42,16 @@ func sessionHandlerFunc() app.HandlerFunc {
 
 	// cookie 名字是 ssid
 	return sessions.New("ssid", store)
+}
+
+func accessLog() app.HandlerFunc {
+	return func(c context.Context, ctx *app.RequestContext) {
+		start := time.Now()
+		ctx.Next(c)
+		end := time.Now()
+		latency := end.Sub(start).Milliseconds()
+		hlog.CtxTracef(c, "status=%d cost=%dms method=%s full_path=%s client_ip=%s host=%s",
+			ctx.Response.StatusCode(), latency,
+			ctx.Request.Header.Method(), ctx.Request.URI().PathOriginal(), ctx.ClientIP(), ctx.Request.Host())
+	}
 }
