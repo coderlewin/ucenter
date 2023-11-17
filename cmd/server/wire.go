@@ -14,6 +14,7 @@ import (
 func InitApp() *App {
 	wire.Build(
 		ioc.InitDB,
+		ioc.InitRedis,
 
 		// DAO 部分
 		mysql.NewUserDao,

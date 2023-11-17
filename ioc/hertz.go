@@ -7,20 +7,20 @@ import (
 	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/coderlewin/ucenter/internal/web"
 	"github.com/coderlewin/ucenter/internal/web/middleware"
-	"github.com/coderlewin/ucenter/pkg/cfg"
 	"github.com/hertz-contrib/sessions"
 	"github.com/hertz-contrib/sessions/cookie"
+	"github.com/spf13/viper"
 	"time"
 )
 
 func InitWebServer(mws []app.HandlerFunc, userHdl *web.UserHandler) *server.Hertz {
 	engine := server.Default(
-		server.WithHostPorts(cfg.MustGet[string]("server.port")),
+		server.WithHostPorts(viper.GetString("server.port")),
 	)
 
 	engine.Use(mws...)
 
-	g := engine.Group(cfg.MustGet[string]("server.prefix"))
+	g := engine.Group(viper.GetString("server.prefix"))
 	userHdl.ConfigRoutes(g)
 
 	return engine

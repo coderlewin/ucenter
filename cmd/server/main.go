@@ -1,18 +1,26 @@
 package main
 
 import (
-	"encoding/gob"
-	"github.com/coderlewin/ucenter/internal/web/vo"
-	"github.com/coderlewin/ucenter/pkg/cfg"
+	"github.com/spf13/viper"
 )
 
 func main() {
 	// 加载配置
-	if err := cfg.Load(); err != nil {
+	if err := initViperConfig(); err != nil {
 		panic(err)
 	}
-	gob.Register(&vo.UserVO{})
 
 	app := InitApp()
 	app.web.Spin()
+}
+
+// 根据 viper 初始化配置
+func initViperConfig() error {
+	viper.SetConfigFile("configs/application.yml")
+
+	if err := viper.ReadInConfig(); err != nil {
+		return err
+	}
+
+	return nil
 }

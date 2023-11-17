@@ -2,8 +2,10 @@ package middleware
 
 import (
 	"context"
+	"encoding/gob"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/coderlewin/ucenter/internal/constants"
+	"github.com/coderlewin/ucenter/internal/web/vo"
 	"github.com/coderlewin/ucenter/pkg/core"
 	"github.com/ecodeclub/ekit/set"
 	"net/http"
@@ -23,6 +25,7 @@ func NewCheckSessionAuthMiddlewareBuilder() *CheckSessionAuthMiddlewareBuilder {
 }
 
 func (m *CheckSessionAuthMiddlewareBuilder) Build() app.HandlerFunc {
+	gob.Register(&vo.UserVO{})
 	return func(c context.Context, ctx *app.RequestContext) {
 		// 不需要校验用户认证
 		if m.publicPaths.Exist(string(ctx.Request.URI().Path())) {

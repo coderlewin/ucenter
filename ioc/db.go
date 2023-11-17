@@ -2,22 +2,21 @@ package ioc
 
 import (
 	"fmt"
-	"github.com/coderlewin/ucenter/pkg/cfg"
 	"github.com/coderlewin/ucenter/pkg/db"
+	"github.com/spf13/viper"
 	"gorm.io/gorm"
-	"time"
 )
 
 func InitDB() *gorm.DB {
 	mysql, err := db.NewMySQL(&db.MySQLOptions{
-		Host:                  cfg.MustGet[string]("db.host"),
-		Username:              cfg.MustGet[string]("db.username"),
-		Password:              cfg.MustGet[string]("db.password"),
-		Database:              cfg.MustGet[string]("db.database"),
-		MaxIdleConnections:    cfg.MustGet[int]("db.max-idle-connections"),
-		MaxOpenConnections:    cfg.MustGet[int]("db.max-open-connections"),
-		MaxConnectionLifeTime: time.Duration(cfg.MustGet[int]("db.max-connection-life-time")) * time.Second,
-		LogLevel:              cfg.MustGet[int]("db.log-level"),
+		Host:                  viper.GetString("db.host"),
+		Username:              viper.GetString("db.username"),
+		Password:              viper.GetString("db.password"),
+		Database:              viper.GetString("db.database"),
+		MaxIdleConnections:    viper.GetInt("db.max-idle-connections"),
+		MaxOpenConnections:    viper.GetInt("db.max-open-connections"),
+		MaxConnectionLifeTime: viper.GetDuration("db.max-connection-life-time"),
+		LogLevel:              viper.GetInt("db.log-level"),
 	})
 
 	if err != nil {
